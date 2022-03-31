@@ -24,11 +24,9 @@ class ControllerInterested extends Controller
         try{
             $response = ModelVWInterested::get();
         }catch(PDOException $e){
-            $response =  ['code'=>$e->getCode(),'message'=>$e->getMessage()];
+            return response()->json(['message'=>$response['message']],$e->getCode());
         }
 
-        if(is_array($response))
-            return response()->json(['message'=>$response['message']]);
 
         if(count($response)==0)
             return response()->json(['message'=>"Nenhum interesse encontrado"]);
@@ -47,11 +45,8 @@ class ControllerInterested extends Controller
         try{
             $response = ModelVWInterested::where('name',$name)->get();
         }catch(PDOException $e){
-            $response =  ['code'=>$e->getCode(),'message'=>$e->getMessage()];
+            return response()->json(['message'=>$response['message']],$e->getCode());
         }
-
-        if(is_array($response))
-            return response()->json(['message'=>$response['message']]);
 
         if(count($response)==0)
             return response()->json(['message'=>"Nenhum bolo encontrado para '$name'"]);
@@ -64,30 +59,22 @@ class ControllerInterested extends Controller
      * Grava a informação no banco
      *
      * @param Request $request
-     * @return void
+     * @return json
      */
     public function store(Request $request){
 
         try{
-            $response = DB::transaction(function () use($request) {
 
                 $id_cake = ModelCake::select('id')->where('name',$request->name)->first();
                 if($id_cake === null)
-                    return ['code'=>404,'message'=>'Bolo não encontrado'];
+                    return response()->json(['message'=>'Bolo não encontrado'],200);
                 $id_cake = $id_cake->id;
 
 
-                $id_email = ModelEmail::select('id')->where('email',$request->email)->first();
-                if($id_email === null){
-                    $id_email = ModelEmail::insertGetId(['email'=>$request->email]);
-                }else{
-                    $id_email = $id_email->id;
-                }
+                $exists_email = ModelEmail::select('id')->where('email',$request->email)->first();
+                $id_email = ($exists_email === null) ? ModelEmail::insertGetId(['email'=>$request->email]) : $exists_email->id;
 
                 $response = ModelInterested::insert(['id_cake'=>$id_cake,'id_email'=>$id_email,]);
-
-                return $response;
-            });
 
         }catch(PDOException $e){
             $response = ['code'=>$e->getCode(),'message'=>$e->getMessage()];
@@ -95,16 +82,12 @@ class ControllerInterested extends Controller
 
         if(is_array($response)){
             switch($response['code']){
-                case 404:
-                    $message = 'Bolo não encontrado';
-                break;
-
                 case 23000:
                     $message = "Já existe o interesse ao bolo '$request->name' pelo email '$request->email'";
                 break;
 
                 default:
-                    $message = 'Erro desconhecido';
+                    $message = $response['message'];
                 break;
             }
             return response()->json(['message'=>$message]);
@@ -118,12 +101,17 @@ class ControllerInterested extends Controller
      * Remove uma informação do banco
      *
      * @param string $name
-     * @return void
+     * @return json
      */
     public function destroy(string $name, string $email){
 
         try{
-            $response = ModelInterested::where('name',$name)->where('email',$email)->delete();
+
+            $interested = ModelVWInterested::where('name',$name)->where('email',$email)->first();
+            if(!$interested)
+                return response()->json(['message'=>"Interesse de '{$email}' em '{$name}' não existe"],200);
+
+            $response = ModelInterested::where('id_cake',$interested->id_cake)->where('id_email',$interested->id_email)->delete();
         }catch(PDOException $e){
             $response =  ['code'=>$e->getCode(),'message'=>$e->getMessage()];
         }

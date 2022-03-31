@@ -18,7 +18,9 @@ class ControllerEmails extends Controller
      */
     public function send(){
 
-        $emails = $this->filter();
+        $list_interested = ModelVWInterested::get();
+
+        $emails = $this->filter($list_interested);
 
         foreach($emails as $email=>$cakes){
             SendMail::dispatch(['email'=>$email,'cakes'=>$cakes])->delay(now()->addSeconds('5'));
@@ -28,16 +30,17 @@ class ControllerEmails extends Controller
     }
 
 
+
     /**
      * Filtra os bolos deixando somente os que estão disponiveis
      * Retorna os emails com uma lista dos bolos interessados
      *
+     * @param array $list_interested
      * @return array
      */
-    public function filter(){
-        $list_interested = ModelVWInterested::get();
+    public function filter(array $list_interested){
 
-        #filtrando bolos com quantidade disponivel
+        #retirando bolos com quantidade zero
         foreach($list_interested as $index=>$item){
             if($item->quantity == 0){
                 unset($list_interested[$index]);

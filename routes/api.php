@@ -7,14 +7,14 @@ use App\Http\Controllers\Api\ControllerInterested;
 
 route::prefix('cake')->group(function(){
 
-    route::get('/',[ControllerCake::class,'index']);
-    route::get('show/{name}',[ControllerCake::class,'show']);
+    route::get('/',[ControllerCake::class,'index'])->name('cake');
+    route::get('show/{name}',[ControllerCake::class,'show'])->name('cake.show');
 
-    route::put('store',[ControllerCake::class,'store']);
+    route::put('store',[ControllerCake::class,'store'])->name('cake.store');
 
-    route::post('update/{name}',[ControllerCake::class,'update']);
+    route::post('update/{name}',[ControllerCake::class,'update'])->name('cake.update');
 
-    route::delete('destroy/{name}',[ControllerCake::class,'destroy']);
+    route::delete('destroy/{name}',[ControllerCake::class,'destroy'])->name('cake.destroy');
 
 });
 

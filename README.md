@@ -23,7 +23,7 @@ Para rodar as migrations
 php artisan migrate
 ```
 
-Para rodar os seeders de bolos e interessados (irá inserir 5 bolos e 50000 interessados)
+Para rodar os seeders de bolos e interessados (irá inserir 5 bolos e 1000 interessados)
 ```
 php artisan db:seed
 ```

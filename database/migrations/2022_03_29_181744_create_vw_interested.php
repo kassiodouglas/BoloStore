@@ -18,8 +18,9 @@ class CreateVwInterested extends Migration
         DB::statement("
             CREATE VIEW vw_interested AS
             SELECT
-
+                CAKE.id id_cake,
                 CAKE.name,
+                EMAIL.id id_email,
                 EMAIL.email,
                 CAKE.quantity
 

@@ -19,7 +19,7 @@ class InterestedSeeder extends Seeder
      */
     public function run()
     {
-        $regs = 50000;
+        $regs = 1000;
 
         for($x=0; $x<$regs; $x++){
 
