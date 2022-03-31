@@ -1,4 +1,4 @@
-# CakeStore
+# CakeStore 1.0.0
 
 Está API irá fazer os cadastro e edição de bolos. Também haverá o cadastro de interessados nesses bolos, informando o email, assim no final será possível enviar para cada email uma lista com os bolos do interesse do usuario.
 
