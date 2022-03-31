@@ -123,9 +123,9 @@ GET:api/interested/show/{nome_bolo}
 <br>
 
 ### **Rotas de Email**
-Envia os emails aos interessados quando houver quantidade de bolo maior que zero
+Envia os emails dos interessados a fila de processamento quando houver quantidade de bolo maior que zero
 ```
-GET:/api/sendemails
+GET:/api/interested/mail/send
 ```
 
 

@@ -38,6 +38,7 @@ class SendMail implements ShouldQueue
      */
     public function handle()
     {
+        ini_set('max_execution_time', '0');#adicionado somente para testes, essa é uma configuração que deve ser feita no php
         Mail::to($this->toEmail)->send(new \App\Mail\SendMail($this->listCakes));
     }
 }
